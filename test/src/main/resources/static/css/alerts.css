@@ -1,0 +1,26 @@
+/* Alerts */
+.alert {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+}
+
+.alert-success {
+    background: var(--color-success-light);
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.alert-danger {
+    background: var(--color-danger-light);
+    color: #991b1b;
+    border-color: #fecaca;
+}
+
+.alert-warning {
+    background: var(--color-warning-light);
+    color: #92400e;
+    border-color: #fde68a;
+}

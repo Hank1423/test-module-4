@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html_head('Chi Tiết Giao Dịch Nhà Đất')}"></head>
+<body>
+
+    <header th:replace="~{fragments/layout :: navbar('list')}"></header>
+
+    <main class="container py-4 py-lg-5 flex-grow-1" style="max-width: 920px;">
+
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/transactions}"><i class="fa-solid fa-house me-1"></i>Danh sách</a></li>
+                <li class="breadcrumb-item active fw-semibold" aria-current="page" th:text="'Chi tiết ' + ${giaoDich.maGiaoDich}">Chi tiết giao dịch</li>
+            </ol>
+        </nav>
+
+        <div class="card-luxury elevated reveal">
+
+            <!-- Hero -->
+            <div class="page-hero">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="hero-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        <div>
+                            <span class="hero-tag"><i class="fa-solid fa-hashtag"></i>HỒ SƠ BẤT ĐỘNG SẢN</span>
+                            <h2 class="h3">Chi tiết giao dịch</h2>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="badge-code fs-6 px-3 py-2" th:text="${giaoDich.maGiaoDich}">MGD-0001</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 p-md-5">
+
+                <!-- 1. Thông tin giao dịch -->
+                <section class="mb-5">
+                    <h5 class="section-title">
+                        <span class="section-icon"><i class="fa-solid fa-landmark"></i></span>
+                        <span>Thông tin giao dịch nhà và đất</span>
+                    </h5>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="detail-info-item">
+                                <div class="detail-info-label">Mã giao dịch</div>
+                                <div class="detail-info-value text-primary fw-bold" th:text="${giaoDich.maGiaoDich}">MGD-0001</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="detail-info-item">
+                                <div class="detail-info-label">Loại bất động sản</div>
+                                <div class="detail-info-value">
+                                    <span th:if="${giaoDich.loaiDichVu == 'Đất'}" class="badge-service dat">
+                                        <i class="fa-solid fa-mountain-sun"></i> Đất
+                                    </span>
+                                    <span th:unless="${giaoDich.loaiDichVu == 'Đất'}" class="badge-service nha-dat">
+                                        <i class="fa-solid fa-house-chimney"></i> Nhà đất
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="detail-info-item">
+                                <div class="detail-info-label">Ngày giao dịch</div>
+                                <div class="detail-info-value">
+                                    <i class="fa-regular fa-calendar-check text-muted me-1"></i>
+                                    <span th:text="${#temporals.format(giaoDich.ngayGiaoDich, 'dd/MM/yyyy')}">12/12/2026</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="detail-info-item">
+                                <div class="detail-info-label">Đơn giá (VND/m²)</div>
+                                <div class="detail-info-value fw-bold">
+                                    <span th:text="${#numbers.formatDecimal(giaoDich.donGia, 0, 'POINT', 0, 'COMMA')}">2.000.000</span> <span class="text-muted fw-normal small">₫/m²</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="detail-info-item">
+                                <div class="detail-info-label">Diện tích (m²)</div>
+                                <div class="detail-info-value fw-bold">
+                                    <span th:text="${#numbers.formatDecimal(giaoDich.dienTich, 0, 'POINT', 0, 'COMMA')}">100</span> <span class="text-muted fw-normal small">m²</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="detail-info-item is-highlight">
+                                <div class="detail-info-label">Tổng giá trị hợp đồng</div>
+                                <div class="detail-info-value" th:text="${#numbers.formatDecimal(giaoDich.tongTien, 0, 'POINT', 0, 'COMMA')} + ' ₫'">200.000.000 ₫</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Khách hàng -->
+                <section class="mb-4">
+                    <h5 class="section-title">
+                        <span class="section-icon"><i class="fa-solid fa-user-shield"></i></span>
+                        <span>Thông tin khách hàng thực hiện</span>
+                    </h5>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <div class="detail-info-item">
+                                <div class="detail-info-label">Tên khách hàng</div>
+                                <div class="detail-info-value d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-user text-muted"></i>
+                                    <span th:text="${giaoDich.khachHang.tenKhachHang}">Nguyễn Văn A</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="detail-info-item">
+                                <div class="detail-info-label">Số điện thoại</div>
+                                <div class="detail-info-value d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-phone text-muted"></i>
+                                    <a th:href="'tel:' + ${giaoDich.khachHang.soDienThoai}" class="text-body" th:text="${giaoDich.khachHang.soDienThoai}">0905973155</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="detail-info-item">
+                                <div class="detail-info-label">Email liên hệ</div>
+                                <div class="detail-info-value d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-envelope text-muted"></i>
+                                    <a th:href="'mailto:' + ${giaoDich.khachHang.email}" th:text="${giaoDich.khachHang.email}">nguyenvana@gmail.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Hành động -->
+                <div class="d-flex flex-column-reverse flex-sm-row align-items-stretch align-items-sm-center justify-content-between gap-2 pt-4 mt-4 border-top">
+                    <a th:href="@{/transactions}" class="btn btn-luxury-outline px-4 py-2 d-inline-flex align-items-center justify-content-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Quay lại</span>
+                    </a>
+                    <button type="button" class="btn btn-luxury-danger px-4 py-2 d-inline-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#deleteDetailModal">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Xóa</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal xác nhận xóa -->
+    <div class="modal fade modal-luxury" id="deleteDetailModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Xác nhận xóa</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="modal-warn-icon"><i class="fa-solid fa-trash-can"></i></div>
+                    <h5 class="fw-bold mb-2">Bạn có muốn xóa giao dịch này không?</h5>
+                    <p class="text-muted small mb-0">
+                        Mã giao dịch: <strong class="text-danger" th:text="${giaoDich.maGiaoDich}">MGD-0001</strong><br>
+                        Khách hàng: <strong class="text-body" th:text="${giaoDich.khachHang.tenKhachHang}">Nguyễn Văn A</strong>
+                    </p>
+                    <p class="text-muted small mt-2 mb-0">Dữ liệu sau khi xóa sẽ không thể phục hồi.</p>
+                </div>
+                <div class="modal-footer">
+                    <a th:href="@{/transactions}" class="btn btn-luxury-outline px-4">
+                        <i class="fa-solid fa-xmark me-1"></i> Không
+                    </a>
+                    <form th:action="@{/transactions/delete/{id}(id=${giaoDich.maGiaoDich})}" method="post">
+                        <button type="submit" class="btn btn-luxury-danger px-4">
+                            <i class="fa-solid fa-trash-can me-1"></i> Có
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
