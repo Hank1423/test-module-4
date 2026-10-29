@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: html_head('Thêm Mới Giao Dịch Nhà Đất')}"></head>
+<body>
+
+    <header th:replace="~{fragments/layout :: navbar('create')}"></header>
+
+    <main class="container py-4 py-lg-5 flex-grow-1" style="max-width: 860px;">
+
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/transactions}"><i class="fa-solid fa-house me-1"></i>Danh sách</a></li>
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">Thêm mới giao dịch</li>
+            </ol>
+        </nav>
+
+        <div class="card-luxury elevated reveal">
+
+            <!-- Hero -->
+            <div class="page-hero">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="hero-icon"><i class="fa-solid fa-handshake"></i></div>
+                    <div>
+                        <span class="hero-tag"><i class="fa-solid fa-file-circle-plus"></i>HỢP ĐỒNG MỚI</span>
+                        <h2 class="h3">Thêm mới giao dịch</h2>
+                        <p>Điền đầy đủ các thông tin bắt buộc để đăng ký giao dịch nhà đất.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 p-md-5">
+
+                <form th:action="@{/transactions/create}" th:object="${giaoDichDto}" method="post" id="createTransactionForm" novalidate>
+
+                    <!-- Tổng hợp lỗi validation -->
+                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-flash danger align-top mb-4" role="alert">
+                        <span class="alert-icon"><i class="fa-solid fa-exclamation"></i></span>
+                        <div>
+                            <div class="fw-bold mb-1">Vui lòng kiểm tra lại các trường thông tin:</div>
+                            <ul class="mb-0 ps-3 small">
+                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Lỗi</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 1. Mã giao dịch -->
+                    <div class="mb-4">
+                        <label for="maGiaoDich" class="form-label form-label-luxury d-flex flex-wrap justify-content-between align-items-center gap-1">
+                            <span>Mã giao dịch <span class="text-danger">*</span></span>
+                            <small class="text-muted fw-normal"><i class="fa-solid fa-circle-info me-1"></i>Định dạng: MGD-XXXX (4 chữ số)</small>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text border-end-0"><i class="fa-solid fa-barcode"></i></span>
+                            <input type="text"
+                                   id="maGiaoDich"
+                                   th:field="*{maGiaoDich}"
+                                   class="form-control form-control-luxury border-start-0"
+                                   th:classappend="${#fields.hasErrors('maGiaoDich')} ? 'is-invalid' : ''"
+                                   placeholder="Ví dụ: MGD-0006"
+                                   required>
+                        </div>
+                        <div class="invalid-feedback-custom" th:if="${#fields.hasErrors('maGiaoDich')}">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span th:errors="*{maGiaoDich}">Lỗi mã giao dịch</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Khách hàng -->
+                    <div class="mb-4">
+                        <label for="maKhachHang" class="form-label form-label-luxury">
+                            Tên khách hàng <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text border-end-0"><i class="fa-solid fa-user-check"></i></span>
+                            <select id="maKhachHang"
+                                    th:field="*{maKhachHang}"
+                                    class="form-select form-select-luxury border-start-0"
+                                    th:classappend="${#fields.hasErrors('maKhachHang')} ? 'is-invalid' : ''"
+                                    required>
+                                <option value="">-- Chọn khách hàng từ hệ thống --</option>
+                                <option th:each="kh : ${danhSachKhachHang}"
+                                        th:value="${kh.maKhachHang}"
+                                        th:text="${kh.tenKhachHang} + ' (' + kh.maKhachHang + ' - SĐT: ' + kh.soDienThoai + ')'">
+                                    Nguyễn Văn A (KH-001)
+                                </option>
+                            </select>
+                        </div>
+                        <div class="invalid-feedback-custom" th:if="${#fields.hasErrors('maKhachHang')}">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span th:errors="*{maKhachHang}">Lỗi chọn khách hàng</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Loại bất động sản -->
+                    <div class="mb-4">
+                        <label class="form-label form-label-luxury d-block">
+                            Loại bất động sản (dịch vụ) <span class="text-danger">*</span>
+                        </label>
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <label class="service-radio-card">
+                                    <input type="radio" th:field="*{loaiDichVu}" value="Đất" required>
+                                    <div class="service-radio-box">
+                                        <div class="service-icon success"><i class="fa-solid fa-mountain-sun"></i></div>
+                                        <div>
+                                            <div class="fw-bold">Đất</div>
+                                            <small class="text-muted">Đất thổ cư, đất nền dự án</small>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="service-radio-card">
+                                    <input type="radio" th:field="*{loaiDichVu}" value="Nhà đất" required>
+                                    <div class="service-radio-box">
+                                        <div class="service-icon gold"><i class="fa-solid fa-house-chimney"></i></div>
+                                        <div>
+                                            <div class="fw-bold">Nhà đất</div>
+                                            <small class="text-muted">Nhà phố, biệt thự liền kề</small>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback-custom" th:if="${#fields.hasErrors('loaiDichVu')}">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span th:errors="*{loaiDichVu}">Lỗi chọn loại dịch vụ</span>
+                        </div>
+                    </div>
+
+                    <!-- 4. Ngày giao dịch -->
+                    <div class="mb-4">
+                        <label for="ngayGiaoDich" class="form-label form-label-luxury d-flex flex-wrap justify-content-between align-items-center gap-1">
+                            <span>Ngày giao dịch <span class="text-danger">*</span></span>
+                            <small class="text-muted fw-normal"><i class="fa-solid fa-clock me-1"></i>Phải lớn hơn ngày hiện tại</small>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text border-end-0"><i class="fa-regular fa-calendar-days"></i></span>
+                            <input type="date"
+                                   id="ngayGiaoDich"
+                                   th:field="*{ngayGiaoDich}"
+                                   class="form-control form-control-luxury border-start-0"
+                                   th:classappend="${#fields.hasErrors('ngayGiaoDich')} ? 'is-invalid' : ''"
+                                   required>
+                        </div>
+                        <div class="invalid-feedback-custom" th:if="${#fields.hasErrors('ngayGiaoDich')}">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span th:errors="*{ngayGiaoDich}">Lỗi ngày giao dịch</span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <!-- 5. Đơn giá -->
+                        <div class="col-12 col-md-6">
+                            <label for="donGia" class="form-label form-label-luxury d-flex flex-wrap justify-content-between align-items-center gap-1">
+                                <span>Đơn giá (VND/m²) <span class="text-danger">*</span></span>
+                                <small class="text-muted fw-normal">&gt; 500.000 VND</small>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text border-end-0"><i class="fa-solid fa-coins"></i></span>
+                                <input type="number"
+                                       id="donGia"
+                                       th:field="*{donGia}"
+                                       step="any"
+                                       min="500000.01"
+                                       class="form-control form-control-luxury border-start-0 border-end-0 text-end"
+                                       th:classappend="${#fields.hasErrors('donGia')} ? 'is-invalid' : ''"
+                                       placeholder="Ví dụ: 2000000"
+                                       required>
+                                <span class="input-group-text border-start-0">₫/m²</span>
+                            </div>
+                            <div class="invalid-feedback-custom" th:if="${#fields.hasErrors('donGia')}">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span th:errors="*{donGia}">Lỗi đơn giá</span>
+                            </div>
+                        </div>
+
+                        <!-- 6. Diện tích -->
+                        <div class="col-12 col-md-6">
+                            <label for="dienTich" class="form-label form-label-luxury d-flex flex-wrap justify-content-between align-items-center gap-1">
+                                <span>Diện tích (m²) <span class="text-danger">*</span></span>
+                                <small class="text-muted fw-normal">&gt; 20 m²</small>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text border-end-0"><i class="fa-solid fa-vector-square"></i></span>
+                                <input type="number"
+                                       id="dienTich"
+                                       th:field="*{dienTich}"
+                                       step="any"
+                                       min="20.01"
+                                       class="form-control form-control-luxury border-start-0 border-end-0 text-end"
+                                       th:classappend="${#fields.hasErrors('dienTich')} ? 'is-invalid' : ''"
+                                       placeholder="Ví dụ: 100"
+                                       required>
+                                <span class="input-group-text border-start-0">m²</span>
+                            </div>
+                            <div class="invalid-feedback-custom" th:if="${#fields.hasErrors('dienTich')}">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span th:errors="*{dienTich}">Lỗi diện tích</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tổng giá trị dự kiến (create.js cập nhật #previewTongTien) -->
+                    <div class="total-preview mb-4">
+                        <span class="total-label"><i class="fa-solid fa-calculator me-2 text-primary"></i>Tổng giá trị dự kiến</span>
+                        <span class="total-value" id="previewTongTien">0 ₫</span>
+                    </div>
+
+                    <!-- Hành động -->
+                    <div class="d-flex flex-column-reverse flex-sm-row align-items-stretch align-items-sm-center justify-content-end gap-2 gap-sm-3 pt-4 border-top">
+                        <a th:href="@{/transactions}" class="btn btn-luxury-outline px-4 py-2">
+                            <i class="fa-solid fa-xmark me-1"></i> Hủy
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 py-2 d-inline-flex align-items-center justify-content-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Lưu giao dịch</span>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+    <script th:src="@{/js/create.js}"></script>
+</body>
+</html>
